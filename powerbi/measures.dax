@@ -1,0 +1,36 @@
+// =====================================================================
+// measures.dax: DAX measures for the immunization dashboard
+// Source table: wuenic_west_africa_long.csv (columns: iso3c, country, vaccine,
+// year, target_grp, coverage, gap_to_95, below_95)
+// Create each one in Power BI: Home > New measure, paste ONE measure at a time.
+// Rule of thumb: a column is fixed per row; a MEASURE reacts to slicers.
+// =====================================================================
+
+Target = 95
+
+Avg Coverage =
+AVERAGE ( wuenic_west_africa_long[coverage] )
+
+Avg Gap to Target =
+[Target] - [Avg Coverage]
+
+Countries Below Target =
+CALCULATE (
+    DISTINCTCOUNT ( wuenic_west_africa_long[iso3c] ),
+    FILTER ( wuenic_west_africa_long, wuenic_west_africa_long[coverage] < [Target] )
+)
+
+// Coverage in the most recent year that is selected/visible
+Latest Year =
+MAX ( wuenic_west_africa_long[year] )
+
+Coverage Latest Year =
+CALCULATE ( [Avg Coverage], wuenic_west_africa_long[year] = [Latest Year] )
+
+// Change vs the first year in the current filter context
+First Year =
+MIN ( wuenic_west_africa_long[year] )
+
+Change Since First Year =
+[Coverage Latest Year]
+    - CALCULATE ( [Avg Coverage], wuenic_west_africa_long[year] = [First Year] )
