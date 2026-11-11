@@ -1,0 +1,14 @@
+# Python environment and caches
+.venv/
+__pycache__/
+*.pyc
+
+# Raw data (download from UNICEF, see README)
+data/raw/*
+!data/raw/.gitkeep
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+data/processed/
